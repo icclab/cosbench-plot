@@ -35,9 +35,9 @@ class Test(unittest.TestCase):
         # stats['name'].data[x]
         rtp = RTFileParser('w55-1cont_4kb-rt-histogram.csv')
         stats = rtp.loadStatistics()
-        assert(stats['ResTime'][0] == '0~10')
+        assert(stats[RTFileParser.RES_TIME_HDR][0] == '0~10')
         assert(stats['s2-w(4)KB_c1_o1000_r80w15d5_1-w1-main-read'][0] == '44647')
-        assert(stats['s2-w(4)KB_c1_o1000_r80w15d5_1-w1-main-read-pct'][0] == '99.97%')
+        assert(stats['s2-w(4)KB_c1_o1000_r80w15d5_1-w1-main-read'+RTFileParser.PCT_SFX][0] == '99.97%')
         assert(stats['s2-w(4)KB_c1_o1000_r80w15d5_1-w1-main-delete'][28] == '4')
 
     def testWorkLoadFullStats(self):

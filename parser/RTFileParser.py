@@ -7,6 +7,8 @@ from cosbenchplot.parser.FileParser import FileParser
 
 class RTFileParser(FileParser):
 
+    PCT_SFX = '-pct'
+    RES_TIME_HDR = 'ResTime'
 
     def __init__(self, filename):
         super(RTFileParser, self).__init__(filename)
@@ -40,7 +42,7 @@ class RTFileParser(FileParser):
         prevheader = ''
         for token in tokens:
             if token == '(%)':
-                expandedheader.append(prevheader+'-pct')
+                expandedheader.append(prevheader + RTFileParser.PCT_SFX)
             else:
                 expandedheader.append(token)
             prevheader = token

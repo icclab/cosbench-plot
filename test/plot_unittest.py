@@ -8,9 +8,10 @@ from cosbenchplot.parser.WorkLoadFileParser import WorkLoadFileParser
 from cosbenchplot.plotter.ScatterPlotter import ScatterPlotter
 import os
 from collections import OrderedDict
+from cosbenchplot.plotter.RTFilePlotter import RTFilePlotter
+from cosbenchplot.parser.RTFileParser import RTFileParser
 
 class Test(unittest.TestCase):
-
 
     def testScatterPlot1(self):
         filename = 'w55-1cont_4kb.csv'
@@ -65,6 +66,19 @@ class Test(unittest.TestCase):
             labels.append(label)
         ids = [int(id_part.split('string')[1]) for id_part in labels]
         assert(ids == range(21))
+
+    def testRTPlotter(self):
+        rtp = RTFileParser('w55-1cont_4kb-rt-histogram.csv')
+        stats = rtp.loadStatistics()
+        rtfp = RTFilePlotter("4kb-1c-100%w")
+        rtfp.addDataAndCdfArrays('512 threads', stats['s19-w(4)KB_c1_o1000_r0w100d0_512-w1-main-write'], stats['s19-w(4)KB_c1_o1000_r0w100d0_512-w1-main-write-pct'])
+        rtfp.addDataAndCdfArrays('256 threads', stats['s16-w(4)KB_c1_o1000_r0w100d0_256-w1-main-write'], stats['s16-w(4)KB_c1_o1000_r0w100d0_256-w1-main-write-pct'])
+        rtfp.addDataAndCdfArrays('128 threads', stats['s13-w(4)KB_c1_o1000_r0w100d0_128-w1-main-write'], stats['s13-w(4)KB_c1_o1000_r0w100d0_128-w1-main-write-pct'])
+        rtfp.addDataAndCdfArrays('64 threads', stats['s10-w(4)KB_c1_o1000_r0w100d0_64-w1-main-write'], stats['s10-w(4)KB_c1_o1000_r0w100d0_64-w1-main-write-pct'])
+        rtfp.addDataAndCdfArrays('16 threads', stats['s7-w(4)KB_c1_o1000_r0w100d0_16-w1-main-write'], stats['s7-w(4)KB_c1_o1000_r0w100d0_16-w1-main-write-pct'])
+        
+        rtfp.addXArray(stats[RTFileParser.RES_TIME_HDR])
+        rtfp.plot()
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testScatterPlot']
