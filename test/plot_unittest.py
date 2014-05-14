@@ -71,13 +71,21 @@ class Test(unittest.TestCase):
         rtp = RTFileParser('w55-1cont_4kb-rt-histogram.csv')
         stats = rtp.loadStatistics()
         rtfp = RTFilePlotter("4kb-1c-100%w")
-        rtfp.addDataAndCdfArrays('512 threads', stats['s19-w(4)KB_c1_o1000_r0w100d0_512-w1-main-write'], stats['s19-w(4)KB_c1_o1000_r0w100d0_512-w1-main-write-pct'])
-        rtfp.addDataAndCdfArrays('256 threads', stats['s16-w(4)KB_c1_o1000_r0w100d0_256-w1-main-write'], stats['s16-w(4)KB_c1_o1000_r0w100d0_256-w1-main-write-pct'])
-        rtfp.addDataAndCdfArrays('128 threads', stats['s13-w(4)KB_c1_o1000_r0w100d0_128-w1-main-write'], stats['s13-w(4)KB_c1_o1000_r0w100d0_128-w1-main-write-pct'])
-        rtfp.addDataAndCdfArrays('64 threads', stats['s10-w(4)KB_c1_o1000_r0w100d0_64-w1-main-write'], stats['s10-w(4)KB_c1_o1000_r0w100d0_64-w1-main-write-pct'])
-        rtfp.addDataAndCdfArrays('16 threads', stats['s7-w(4)KB_c1_o1000_r0w100d0_16-w1-main-write'], stats['s7-w(4)KB_c1_o1000_r0w100d0_16-w1-main-write-pct'])
-        
-        rtfp.addXArray(stats[RTFileParser.RES_TIME_HDR])
+        rtfp.addDataAndCdfArrays('512 threads', stats['s19-w(4)KB_c1_o1000_r0w100d0_512-w1-main-write'], stats['s19-w(4)KB_c1_o1000_r0w100d0_512-w1-main-write-pct'], stats[RTFileParser.RES_TIME_HDR])
+        rtfp.addDataAndCdfArrays('256 threads', stats['s16-w(4)KB_c1_o1000_r0w100d0_256-w1-main-write'], stats['s16-w(4)KB_c1_o1000_r0w100d0_256-w1-main-write-pct'], stats[RTFileParser.RES_TIME_HDR])
+        rtfp.addDataAndCdfArrays('128 threads', stats['s13-w(4)KB_c1_o1000_r0w100d0_128-w1-main-write'], stats['s13-w(4)KB_c1_o1000_r0w100d0_128-w1-main-write-pct'], stats[RTFileParser.RES_TIME_HDR])
+        rtfp.addDataAndCdfArrays('64 threads', stats['s10-w(4)KB_c1_o1000_r0w100d0_64-w1-main-write'], stats['s10-w(4)KB_c1_o1000_r0w100d0_64-w1-main-write-pct'], stats[RTFileParser.RES_TIME_HDR])
+        rtfp.addDataAndCdfArrays('16 threads', stats['s7-w(4)KB_c1_o1000_r0w100d0_16-w1-main-write'], stats['s7-w(4)KB_c1_o1000_r0w100d0_16-w1-main-write-pct'], stats[RTFileParser.RES_TIME_HDR])
+        rtfp.plot()
+
+    def testRtPlotEntireFile(self):
+        rtp = RTFileParser('w55-1cont_4kb-rt-histogram.csv')
+        rtp.loadStatistics()
+        data = rtp.getAllDataAndCdfArrays()
+        rtfp = RTFilePlotter("4kb-1c-100%w")
+        for (label, data, cdf) in data:
+            if 'r0w100d0' in label:
+                rtfp.addDataAndCdfArrays(label, data, cdf, rtp.statistics[RTFileParser.RES_TIME_HDR])
         rtfp.plot()
 
 if __name__ == "__main__":

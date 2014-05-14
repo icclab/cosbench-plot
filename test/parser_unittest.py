@@ -48,6 +48,12 @@ class Test(unittest.TestCase):
         tpt_read_values = wlfp.getAnyStageValue('read', 'Throughput')
         assert(set(tpt_read_values) == set(['1880.78', '887.11', '1775.36', '957.39', '1857.36', '326.41', '1594.95', '74.45', '973.66', '972.47', '1576.08', '551.75']))
 
+    def testRTFileAllDataAndCdfArrays(self):
+        rtp = RTFileParser('w55-1cont_4kb-rt-histogram.csv')
+        rtp.loadStatistics()
+        dataandcdf = rtp.getAllDataAndCdfArrays()
+        assert(dataandcdf[0][0] == 's2-w(4)KB_c1_o1000_r80w15d5_1-w1-main-read')
+
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testColumnsDataParsing']
     unittest.main()
