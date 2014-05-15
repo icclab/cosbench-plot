@@ -47,9 +47,10 @@ class StageFileParser(FileParser):
         OP_DELETE = 'delete'
         ops = [OP_READ, OP_WRITE, OP_DELETE]
 
-    def __init__(self, filename):
+    def __init__(self, filename, annotation):
         super(StageFileParser, self).__init__(filename)
         self.statistics = {}
+        self.statistics[FileParser.ANNOTATION] = annotation
 
     def loadStatistics(self):
         '''
@@ -61,7 +62,8 @@ class StageFileParser(FileParser):
               d[AVG_PROC_TIME+OP_READ].data[10]
         
         E.g.: 
-              d[AVG_PROC_TIME+OP_READ].headerType
+              d[AVG_PROC_TIME+OP_READ].headerType.name
+              d[AVG_PROC_TIME+OP_READ].headerType.unit
         '''
         with open(self._filename) as f:
             header = f.next().strip()

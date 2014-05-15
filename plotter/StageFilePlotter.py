@@ -22,7 +22,7 @@ class StageFilePlotter(FilePlotter):
         fig, data_ax = plt.subplots()
         for (label, data) in self._dataArrays.items():
             xticks = [x for x in range(0, len(data))]
-            data = [float(x) for x in data]
+            data = [float(x.replace('%','')) for x in data]
             color = color=self._getNextColor()
             data_ax.plot(xticks, data, label=label, color=color)
             # Minimum squared error
