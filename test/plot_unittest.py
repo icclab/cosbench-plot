@@ -10,6 +10,8 @@ import os
 from collections import OrderedDict
 from cosbenchplot.plotter.RTFilePlotter import RTFilePlotter
 from cosbenchplot.parser.RTFileParser import RTFileParser
+from cosbenchplot.parser.StageFileParser import StageFileParser
+from cosbenchplot.plotter.StageFilePlotter import StageFilePlotter
 
 class Test(unittest.TestCase):
 
@@ -87,6 +89,15 @@ class Test(unittest.TestCase):
             if 'r0w100d0' in label:
                 rtfp.addDataAndCdfArrays(label, data, cdf, rtp.statistics[RTFileParser.RES_TIME_HDR])
         rtfp.plot()
+
+    def testStageFilePlotter(self):
+        sfp = StageFileParser('s2-w(4)KB_c1_o1000_r80w15d5_1.csv')
+        stats = sfp.loadStatistics()
+        sfpl = StageFilePlotter('4kb-1c-r80w15d15')
+        op = StageFileParser.Operations.OP_READ
+        datakey = StageFileParser.HeaderTypes.BANDWIDTH+op
+        sfpl.addDataArray(stats[datakey].data, op + stats[datakey].headerType.name, stats[datakey].headerType.unit)
+        sfpl.plot()
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testScatterPlot']
