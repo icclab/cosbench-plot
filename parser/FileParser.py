@@ -6,6 +6,8 @@ Created on May 9, 2014
 
 class FileParser(object):
 
+    ANNOTATION = 'annotation'
+
     class AutoVivification(dict):
         """Implementation of perl's autovivification feature."""
         def __getitem__(self, item):
@@ -40,7 +42,7 @@ class FileParser(object):
                 if stopPredicate is not None and stopPredicate(line) is True:
                     # We need to stop with this file
                     return columnsData
-                line = self._validateLine(line, prevline)
+                line,prevline = self._validateLine(line, prevline)
                 tokens = line.split(',')
                 for (col,token) in enumerate(tokens):
                     try:
@@ -62,7 +64,7 @@ class FileParser(object):
             # Only advance prevline if this line is valid (in case there are
             # multiple consequent not valid lines)
             prevline = line
-        return line
+        return line,prevline
     
     def _validateFileFormat(self):
         # TODO
