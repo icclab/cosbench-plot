@@ -31,7 +31,7 @@ class StageFileParser(FileParser):
         stat_version_info = Statistic(VERSION_INFO, '')
         
         headers = {TIMESTAMP: stat_timestamp, OP_COUNT: stat_op_count, BYTE_COUNT: stat_byte_count,
-                   AVG_RES_TIME: stat_avg_res_time, AVG_PROC_TIME: stat_avg_res_time,
+                   AVG_RES_TIME: stat_avg_res_time, AVG_PROC_TIME: stat_avg_proc_time,
                    THROUGHPUT: stat_throughput, BANDWIDTH: stat_bandwidth, SUCC_RATIO: stat_succ_ratio,
                    VERSION_INFO: stat_version_info}
 

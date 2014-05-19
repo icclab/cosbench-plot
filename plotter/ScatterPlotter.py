@@ -14,7 +14,7 @@ class ScatterPlotter(FilePlotter):
     def __init__(self, title):
         super(ScatterPlotter, self).__init__(title)
 
-    def plot(self):
+    def plotImpl(self):
         fig, ax = plt.subplots()
         counter = 0
         xticks = []
@@ -29,4 +29,4 @@ class ScatterPlotter(FilePlotter):
         plt.autoscale(True, 'both', True)
         plt.title(self._title)
         fig.set_tight_layout(True)
-        plt.show()
+        return plt

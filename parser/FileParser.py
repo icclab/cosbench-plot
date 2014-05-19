@@ -42,7 +42,8 @@ class FileParser(object):
                 if stopPredicate is not None and stopPredicate(line) is True:
                     # We need to stop with this file
                     return columnsData
-                line,prevline = self._validateLine(line, prevline)
+                #line,prevline = self._validateLine(line, prevline)
+                line = self._validateLinePragmatic(line)
                 tokens = line.split(',')
                 for (col,token) in enumerate(tokens):
                     try:
@@ -56,15 +57,22 @@ class FileParser(object):
     def _validateLine(self, line, prevline):
         '''
         If the current line is not valid, returns the previous one, unless it
-        was empty
+        was empty, in which case just replaces N/A with a '0' character
         '''
-        if 'N/A' in line and len(prevline) is not 0:
-            line = prevline
+        if 'N/A' in line:
+            if len(prevline) is not 0:
+                line = prevline
+            else:
+                # First line of the file contains 'N/A's, replcae with '0'
+                line = line.replace('N/A', '0')
         else:
             # Only advance prevline if this line is valid (in case there are
             # multiple consequent not valid lines)
             prevline = line
         return line,prevline
+    
+    def _validateLinePragmatic(self, line):
+        return line.replace('N/A', '0')
     
     def _validateFileFormat(self):
         # TODO

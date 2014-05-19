@@ -18,11 +18,15 @@ class StageFilePlotter(FilePlotter):
         self._unit = unit
         super(StageFilePlotter, self).addDataArray(data, label)
 
-    def plot(self):
+    def plotImpl(self):
         fig, data_ax = plt.subplots()
         for (label, data) in self._dataArrays.items():
             xticks = [x for x in range(0, len(data))]
-            data = [float(x.replace('%','')) for x in data]
+            try:
+                data = [float(x.replace('%','')) for x in data]
+            except ValueError:
+                print label, data
+                raise Exception('closing')
             color = color=self._getNextColor()
             data_ax.plot(xticks, data, label=label, color=color)
             # Minimum squared error
@@ -32,10 +36,11 @@ class StageFilePlotter(FilePlotter):
             data_ax.plot(xticks, ys, color=color, linewidth='2.0')
             data_ax.set_ylabel(self._unit)
         data_ax.set_xlabel('Time (5s)')
-        #cdf_ax.set_ylabel('CDF')
-        data_ax.legend(loc='upper right', shadow=True)
         plt.grid(True)
         plt.autoscale(True, 'both', True)
-        plt.title(self._title)
         fig.set_tight_layout(True)
-        plt.show()
+        #box = data_ax.get_position()
+        #data_ax.set_position([box.x0, box.y0, box.width, box.height * 0.7])
+        data_ax.legend(loc='upper right', fancybox=True, shadow=True)
+        plt.title(self._title)
+        return plt

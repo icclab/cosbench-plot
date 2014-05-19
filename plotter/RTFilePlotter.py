@@ -30,7 +30,7 @@ class RTFilePlotter(FilePlotter):
     def addDataArray(self, data, label=''):
         raise Exception('This method is not available for RT plots, use addDataAndCdfArrays')
 
-    def plot(self):
+    def plotImpl(self):
         fig, data_ax = plt.subplots()
         cdf_ax = data_ax.twinx()
         for (label,desc) in self._cdfDataArrays.items():
@@ -45,7 +45,7 @@ class RTFilePlotter(FilePlotter):
         plt.autoscale(True, 'both', True)
         plt.title(self._title)
         fig.set_tight_layout(True)
-        plt.show()
+        return plt
 
     def _getXTicks(self, xarray):
         return [l.split('~')[0] for l in xarray]

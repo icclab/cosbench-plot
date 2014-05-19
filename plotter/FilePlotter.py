@@ -11,6 +11,7 @@ class FilePlotter(object):
     def __init__(self, title):
         self._dataArrays = OrderedDict()
         self._title = title
+        self.colors = itertools.cycle(['r', 'b', 'g', 'c', 'm', 'y', 'k'])
 
     def addDataArray(self, data, label = ''):
         label = self._getUniqueLabel(self._dataArrays, label)
@@ -18,6 +19,28 @@ class FilePlotter(object):
 
     def clean(self):
         self._dataArrays = {}
+
+    def containsData(self):
+        return len(self._dataArrays) > 0
+
+    def plot(self, **kwargs):
+        # Setup
+        if self.containsData() == False:
+            raise Exception("No data to plot!")
+        
+        # Implementation
+        plt = self.plotImpl()
+        
+        # Finalization
+        if kwargs.get('show', False) == True:
+            plt.show()
+        toFile = kwargs.get('saveto', '')
+        if len(toFile) > 0:
+            plt.savefig(toFile)
+        plt.close()
+
+    def plotImpl(self):
+        raise Exception("Only implementation on the subclasses are available")
 
     def _getUniqueLabel(self, dictionary, label):
         counter = 0
@@ -30,5 +53,5 @@ class FilePlotter(object):
         return label
 
     def _getNextColor(self):
-        return next(self._getNextColor.colors)
-    _getNextColor.colors = itertools.cycle(['r', 'b', 'g', 'c', 'm', 'y', 'k'])
+        return next(self.colors)
+    
