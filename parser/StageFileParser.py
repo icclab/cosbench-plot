@@ -26,7 +26,7 @@ class StageFileParser(FileParser):
         stat_avg_res_time = Statistic(AVG_RES_TIME, 'ms')
         stat_avg_proc_time = Statistic(AVG_PROC_TIME, 'ms')
         stat_throughput = Statistic(THROUGHPUT, 'op/s')
-        stat_bandwidth = Statistic(BANDWIDTH, 'MB/s')
+        stat_bandwidth = Statistic(BANDWIDTH, 'B/s')
         stat_succ_ratio = Statistic(SUCC_RATIO, 'pct')
         stat_version_info = Statistic(VERSION_INFO, '')
         

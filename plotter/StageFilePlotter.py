@@ -13,10 +13,18 @@ class StageFilePlotter(FilePlotter):
     def __init__(self, title):
         super(StageFilePlotter, self).__init__(title)
         self._unit = ''
+        self._onlyAvg = False
+        self._linestilerule = lambda: '-'
 
     def addDataArray(self, data, label = '', unit=''):
         self._unit = unit
         super(StageFilePlotter, self).addDataArray(data, label)
+
+    def plotOnlyAvg(self, v = True):
+        self._onlyAvg = v
+
+    def setLineStyleRule(self, linestilerule):
+        self._linestilerule = linestilerule
 
     def plotImpl(self):
         fig, data_ax = plt.subplots()
@@ -28,12 +36,14 @@ class StageFilePlotter(FilePlotter):
                 print label, data
                 raise Exception('closing')
             color = color=self._getNextColor()
-            data_ax.plot(xticks, data, label=label, color=color)
+            ls = self._linestilerule(label)
+            if (self._onlyAvg == False):
+                data_ax.plot(xticks, data, color=color, linewidth = '0.5')
             # Minimum squared error
             coefficients = polyfit(xticks, data, 6)
             polynomial = poly1d(coefficients)
             ys = polynomial(xticks)
-            data_ax.plot(xticks, ys, color=color, linewidth='2.0')
+            data_ax.plot(xticks, ys, color=color, linewidth='2.0', label=label, ls=ls)
             data_ax.set_ylabel(self._unit)
         data_ax.set_xlabel('Time (5s)')
         plt.grid(True)

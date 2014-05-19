@@ -26,6 +26,7 @@ class RTFilePlotter(FilePlotter):
         xticks = self._getXTicks(xarray)
         desc = RTFilePlotter.DataAndCdfDescriptor(label, data, cdf, xticks)
         self._cdfDataArrays[label] = desc
+        self._dataArrays['dummy'] = 0
 
     def addDataArray(self, data, label=''):
         raise Exception('This method is not available for RT plots, use addDataAndCdfArrays')

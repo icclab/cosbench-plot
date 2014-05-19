@@ -9,7 +9,7 @@ from cosbenchplot.parser.StageFileParser import StageFileParser
 from cosbenchplot.plotter.StageFilePlotter import StageFilePlotter
 from cosbenchplot.parser.FileParser import FileParser
 
-class PlotGenerator(object):
+class StagePlotGenerator(object):
     '''
     This class takes workload ids, finds the corresponding directories and
     analyze contained CSV files to make comparisons.
@@ -27,7 +27,7 @@ class PlotGenerator(object):
     '''
 
     def __init__(self, basepath, outdir):
-        super(PlotGenerator, self).__init__()
+        super(StagePlotGenerator, self).__init__()
         self._basepath = basepath + '/'
         self._outdir = outdir
         self._workloadids = {}
@@ -150,12 +150,3 @@ class PlotGenerator(object):
                     # Only if there is data to plot
                     sfpl.plot(show = False, saveto = self._outdir + title + '_' + name + '_' + operation + '.png')
         return
-
-if __name__ == '__main__':
-    plotgen = PlotGenerator('/home/vince/cosbench-data/results/', '/home/vince/cosbench-data/graphs/test/')
-    ceph_workload_ids = [55]
-    ceph_workload_ids.extend([i for i in range(44,55)])
-    plotgen.addWorkloadIds('ceph', ceph_workload_ids)
-    swift_workload_ids = [i for i in range(57, 69)]
-    plotgen.addWorkloadIds('swift', swift_workload_ids)
-    plotgen.createAllStagePlots('/home/vince/cosbench-data/graphs/stage/')

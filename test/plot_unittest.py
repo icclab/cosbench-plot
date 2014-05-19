@@ -52,7 +52,7 @@ class Test(unittest.TestCase):
         for index,parser in enumerate(parsers):
             data = parser.getAnyStageValue('read', 'Bandwidth')
             plotter.addDataArray(data, os.path.basename(files[index]).split('.')[0])
-        plotter.plot()
+        plotter.plot(show=True)
 
     def testUniqueLabels(self):
         plotter = ScatterPlotter('xx')
@@ -91,7 +91,7 @@ class Test(unittest.TestCase):
         rtfp.plot()
 
     def testStageFilePlotter(self):
-        sfp = StageFileParser('s2-w(4)KB_c1_o1000_r80w15d5_1.csv')
+        sfp = StageFileParser('s2-w(4)KB_c1_o1000_r80w15d5_1.csv', 'test')
         stats = sfp.loadStatistics()
         sfpl = StageFilePlotter('4kb-1c-r80w15d15')
         op = StageFileParser.Operations.OP_READ
