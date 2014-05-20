@@ -51,6 +51,6 @@ class StageFilePlotter(FilePlotter):
         fig.set_tight_layout(True)
         #box = data_ax.get_position()
         #data_ax.set_position([box.x0, box.y0, box.width, box.height * 0.7])
-        data_ax.legend(loc='upper right', fancybox=True, shadow=True)
+        data_ax.legend(loc='upper right', fancybox=True, shadow=True, prop={'size':11}, ncol=4, bbox_to_anchor=(1, 1.02))
         plt.title(self._title)
         return plt
