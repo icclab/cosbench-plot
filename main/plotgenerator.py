@@ -8,6 +8,8 @@ import re
 from cosbenchplot.parser.StageFileParser import StageFileParser
 from cosbenchplot.plotter.StageFilePlotter import StageFilePlotter
 from cosbenchplot.parser.FileParser import FileParser
+from cosbenchplot.parser.WorkLoadFileParser import WorkLoadFileParser
+from cosbenchplot.plotter.WorkloadMaxPlotter import WorkloadMaxPlotter
 
 class PlotGenerator(object):
     '''
@@ -45,7 +47,12 @@ class PlotGenerator(object):
 
     def _getWorkloadDirectoryLists(self):
         '''
-        For each workload id, finds the corresponding workload directory
+        For each workload id, finds the corresponding workload directory.
+        The result is a class member dictionary that for each storage system
+        lists its workload directories.
+        Mapping between corresponding directories of different storage systems
+        is provided by their position in the list, which depends on the
+        position of the IDs of the workloads provided by the user.
         '''
         if len(self._workloadids) == 0:
             raise Exception("No directory ids have been provided")
@@ -71,17 +78,70 @@ class PlotGenerator(object):
         return ''
 
     def _validateFileName(self, filename):
+        '''
+        Implementation for @see _validateFileNamesList
+        '''
         if len(self._filenameregex) == 0 or re.search(self._filenameregex, filename):
             return filename
         return ''
 
     def _validateFileNamesList(self, filenamelist):
+        '''
+        Given a list of files, removes them that do not match a regular expression
+        on file names that is given by the user with @see setFilenameFilter.
+        '''
         outlist = []
         for filename in filenamelist:
             validatedFilename = self._validateFileName(filename)
             if len(validatedFilename) > 0:
                 outlist.append(validatedFilename)
         return outlist
+
+    def _filterFileNames(self, filenames, basepath, filter_re):
+        '''
+        Given a list of filenames, returns a list of only the filenames that
+        match a given regular expression.
+        This differs from _validateFileNamesList as the regex here cannot be
+        set by the user, but depends on the generator.
+        E.g., the generator for workstage plots will use a regex to pick only
+        workstage files.
+        '''
+        outlist = []
+        for filen in filenames:
+            if re.search(filter_re, filen):
+                outlist.append(basepath + '/' + filen)
+        return outlist
+
+    def _generateListsOfComparableFiles(self, re_filter):
+        '''
+        This method generates a list of comparable files for each different
+        storage system, for each workload directory
+        '''
+        self._getWorkloadDirectoryLists()
+        names = []
+        matrix = []
+        for storage,wldirs in self._workloaddirs.items():
+            names.append(storage)
+            matrix.append(wldirs)
+        # We now have a matrix of directories and the corresponding storage system names
+        # matrix[i] is for names[i]
+        assert(len(set(map(len, matrix))) == 1) # all have the same length
+        # Transpose the matrix
+        tmat = map(list, zip(*matrix))
+        # tmat is a list of tuples, each one containing the directories that have related workloads
+        # e.g., [(wlx_ceph, wlx_swift), (wly_ceph, wly_swift)]
+        for tpl in tmat:
+            ws_dir_files = []
+            for directory in tpl:
+                files = self._filterFileNames(os.listdir(directory), directory, re_filter)
+                files = self._validateFileNamesList(files)
+                if len(files) > 0:
+                    ws_dir_files.append(files)
+            # ws_dir_files is a list containing the list of files to be compared
+            # for each storage system. Names is a list of the storage names
+            # E.g.: names         ['ceph','swift']
+            #       ws_dir_files  [fx, fy]
+            yield ws_dir_files, names
 
 class RTPlotGenerator(PlotGenerator):
     
@@ -101,13 +161,14 @@ class StagePlotGenerator(PlotGenerator):
 
     def __init__(self, basepath, outdir):
         super(StagePlotGenerator, self).__init__(basepath, outdir)
+        self._workstage_file_re_filter = '^s[0-9]+-w'
 
     def createAllStagePlots(self, outputdir):
         '''
         For each matching stage files tuple, creates a graph for each metric of
         each storage system
         '''
-        for ws_dir_files,storage_names in self._generateListsOfComparableFiles():
+        for ws_dir_files,storage_names in self._generateListsOfComparableFiles(self._workstage_file_re_filter):
             titles = []
             for wsfilename in ws_dir_files[0]:
                 titles.append(self._extractStageTitleFromFileName(os.path.split(wsfilename)[1]))
@@ -134,7 +195,7 @@ class StagePlotGenerator(PlotGenerator):
         metrics = [re.compile(metric) for metric in metrics]
         sfpl = StageFilePlotter(title)
         sfpl.setLineStyleRule(lineStyleRule)
-        for ws_dir_files,storage_names in self._generateListsOfComparableFiles():
+        for ws_dir_files,storage_names in self._generateListsOfComparableFiles(self._workstage_file_re_filter):
             for index,wsfilenames in enumerate(ws_dir_files):
                 for filename in wsfilenames:
                     # Ref to storage storage_names[index]
@@ -149,46 +210,6 @@ class StagePlotGenerator(PlotGenerator):
                             sfpl.addDataArray(data.data, stats[FileParser.ANNOTATION] + '_' + re.search(labelregex, wstitle).group(1), data.headerType.unit)
 #         sfpl.plotOnlyAvg(True)
         sfpl.plot(show = False, saveto = self._outdir + title + '.png')
-
-    def _generateListsOfComparableFiles(self):
-        '''
-        This method generates a list of comparable files for each different
-        storage system, for each workload directory
-        '''
-        self._getWorkloadDirectoryLists()
-        names = []
-        matrix = []
-        for storage,wldirs in self._workloaddirs.items():
-            names.append(storage)
-            matrix.append(wldirs)
-        # We now have a matrix of directories and the corresponding storage system names
-        # matrix[i] is for names[i]
-        assert(len(set(map(len, matrix))) == 1) # all have the same length
-        # Transpose the matrix
-        tmat = map(list, zip(*matrix))
-        # tmat is a list of tuples, each one containing the directories that have related workloads
-        # e.g., [(wlx_ceph, wlx_swift), (wly_ceph, wly_swift)]
-        for tpl in tmat:
-            ws_dir_files = []
-            for directory in tpl:
-                files = self._filterWorkstageFiles(os.listdir(directory), directory)
-                files = self._validateFileNamesList(files)
-                if len(files) > 0:
-                    ws_dir_files.append(files)
-            # ws_dir_files is a list containing the list of files to be compared
-            # for each storage system
-            yield ws_dir_files, names
-
-    def _filterWorkstageFiles(self, filenames, basepath):
-        '''
-        Given a list of filenames, returns a list of only the filenames that contain
-        workstage statistics
-        '''
-        outlist = []
-        for filen in filenames:
-            if re.search('^s[0-9]+-w', filen):
-                outlist.append(basepath + '/' + filen)
-        return outlist
 
     def _extractStageTitleFromFileName(self, ws_filename):
         match = re.search('(^s[0-9]+-w)(.*)(\.csv)', ws_filename)
@@ -246,6 +267,38 @@ class StagePlotGenerator(PlotGenerator):
         return
 
     def _filterStats(self, statname):
+        '''
+        Filters some headers from the workstage files
+        '''
         if statname.startswith('Version-Info') or statname.startswith('Timestamp') or statname == FileParser.ANNOTATION:
             return True
         return False
+
+class WorkloadPlotGenerator(PlotGenerator):
+    
+    def __init__(self, basepath, outdir):
+        super(WorkloadPlotGenerator, self).__init__(basepath, outdir)
+        self._workload_file_re_filter = '^w[0-9]+-((?!rt-histogram).)*\.csv'
+
+    def createWorkloadsMaxChart(self, stage_filter, operation, metric):
+        comparabledata = []
+        for filenameslist,storagename in self._generateListsOfComparableFiles(self._workload_file_re_filter):
+            maxplotter = WorkloadMaxPlotter('cciaii')
+            maxplotter.setPositionalLabels(['ceph', 'swift'])
+            for index,filenames in enumerate(filenameslist):
+                for filename in filenames:
+                    parser = WorkLoadFileParser(filename)
+                    parser.loadStatistics()
+                    comparabledata.append(parser.getMaxValue(stage_filter, operation, metric))
+        # For all files, comparabledata has a list of tuples (one element for each storage system) and
+        # each tuple lists the elements describing the found max
+        values = []
+        annotations = []
+        for storagedata in comparabledata:
+            # For each information of one storage system
+            filename, stagename, operation, metric, value = storagedata
+            xtick = re.search('^w[0-9]+-([0-9]+cont_.*)\.csv', os.path.basename(filename)).group(1)
+            values.append(value)
+            annotations.append(re.search('_([0-9]+)$', stagename).group(1))
+        maxplotter.addPoint(xtick, values, annotations)
+        maxplotter.plot(show=True)

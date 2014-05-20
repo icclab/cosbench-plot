@@ -3,7 +3,10 @@ Created on May 8, 2014
 
 @author: vince
 '''
-from cosbenchplot.main.plotgenerator import StagePlotGenerator
+from cosbenchplot.main.plotgenerator import StagePlotGenerator,\
+    WorkloadPlotGenerator
+from cosbenchplot.parser.StageFileParser import StageFileParser
+from cosbenchplot.parser.WorkLoadFileParser import WorkLoadFileParser
 
 BP = '/home/vince/cosbench-data/results/'
 
@@ -20,10 +23,6 @@ def createStageGraphsForEachStat():
     plotgen.createAllStagePlots(STAGE_OUT_DIR)
 
 def createAggregatedGraphsForStages():
-    outdir = '/home/vince/cosbench-data/graphs/throughput/'
-    plotgen = StagePlotGenerator(BP, outdir)
-    plotgen.addWorkloadIds('ceph', ceph_workload_ids)
-    plotgen.addWorkloadIds('swift', swift_workload_ids)
     lineStyleRule = lambda stname: '-' if 'ceph' in stname else '--'
     workloadFilters = [('\/w[0-9]+-1cont_4kb$', '1 cont - 4kb - '),
                        ('\/w[0-9]+-1cont_128kb$', '1 cont - 128kb - '),
@@ -37,6 +36,10 @@ def createAggregatedGraphsForStages():
                        ('\/w[0-9]+-20cont_1024kb$', '20 cont - 1024kb - '),
                        ('\/w[0-9]+-20cont_5mb$', '20 cont - 5mb - '),
                        ('\/w[0-9]+-20cont_10mb$', '20 cont - 10mb - ')]
+    outdir = '/home/vince/cosbench-data/graphs/throughput/'
+    plotgen = StagePlotGenerator(BP, outdir)
+    plotgen.addWorkloadIds('ceph', ceph_workload_ids)
+    plotgen.addWorkloadIds('swift', swift_workload_ids)
     for workloadFilter in workloadFilters:
         plotgen.setWorkloadFilter(workloadFilter[0])
         plotgen.setFilenameFilter('r100w0d0')
@@ -46,7 +49,26 @@ def createAggregatedGraphsForStages():
         plotgen.setFilenameFilter('r80w15d5')
         plotgen.createAggregatedChart(outdir, workloadFilter[1] + "r:80% w:15% d:5% - Write throughput", '_([0-9]+)$', ['Throughputwrite'], lineStyleRule)
         plotgen.createAggregatedChart(outdir, workloadFilter[1] + "r:80% w:15% d:5% - Read throughput", '_([0-9]+)$', ['Throughputread'], lineStyleRule)
+    outdir = '/home/vince/cosbench-data/graphs/bandwidth/'
+    plotgen._outdir = outdir
+    for workloadFilter in workloadFilters:
+        plotgen.setWorkloadFilter(workloadFilter[0])
+        plotgen.setFilenameFilter('r100w0d0')
+        plotgen.createAggregatedChart(outdir, workloadFilter[1] + "100% read - Read bandwidth", '_([0-9]+)$', ['Bandwidthread'], lineStyleRule)
+        plotgen.setFilenameFilter('r0w100d0')
+        plotgen.createAggregatedChart(outdir, workloadFilter[1] + "100% write - Write bandwidth", '_([0-9]+)$', ['Bandwidthwrite'], lineStyleRule)
+        plotgen.setFilenameFilter('r80w15d5')
+        plotgen.createAggregatedChart(outdir, workloadFilter[1] + "r:80% w:15% d:5% - Write bandwidth", '_([0-9]+)$', ['Bandwidthread'], lineStyleRule)
+        plotgen.createAggregatedChart(outdir, workloadFilter[1] + "r:80% w:15% d:5% - Read bandwidth", '_([0-9]+)$', ['Bandwidthread'], lineStyleRule)
+
+def test():
+    outdir = '/home/vince/cosbench-data/graphs/test/'
+    wlplotgen = WorkloadPlotGenerator(BP, outdir)
+    wlplotgen.addWorkloadIds('ceph', ceph_workload_ids)
+    wlplotgen.addWorkloadIds('swift', swift_workload_ids)
+    wlplotgen.createWorkloadsMaxChart('r100w0d0', 'read', 'Throughput')
 
 if __name__ == '__main__':
     #createStageGraphsForEachStat()
-    createAggregatedGraphsForStages()
+    #createAggregatedGraphsForStages()
+    test()

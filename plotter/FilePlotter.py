@@ -12,7 +12,6 @@ class FilePlotter(object):
         self._dataArrays = OrderedDict()
         self._title = title
         #self.colors = itertools.cycle(['r', 'b', 'g', 'c', 'm', 'y', 'k', ''])
-        #self.colors = itertools.cycle(['DarkBlue', 'DarkGreen', 'MediumSpringGreen', 'Cyan', 'Indigo', 'Maroon', 'Purple', 'LightGreen', 'DarkKhaki', 'GoldenRod', 'Crimson', 'Orange'])
         self.colors = itertools.cycle([
         "#FF0000", "#00FF00", "#0000FF", "#FFFF00", "#FF00FF", "#00FFFF", "#000000", 
         "#800000", "#008000", "#000080", "#808000", "#800080", "#008080", "#808080", 

@@ -4,6 +4,7 @@ Created on May 13, 2014
 @author: vince
 '''
 from cosbenchplot.parser.FileParser import FileParser
+import regex as re
 
 class WorkLoadFileParser(FileParser):
 
@@ -36,6 +37,32 @@ class WorkLoadFileParser(FileParser):
             if len(value) > 0:
                 values.append(value)
         return values
+
+    def _processStageName(self, stage_filter, name):
+        if stage_filter is None or re.search(stage_filter, name):
+            return True
+        return False
+
+    def getMaxValue(self, stage_filter, operation, metric):
+        if len(self.statistics) == 0:
+            raise Exception("No statistic to analyze")
+        ret_max = 0
+        ret_stage_name = None
+        ret_operation = None
+        ret_metric = None
+        for key,value in self.statistics.items():
+            if self._processStageName(stage_filter, key):
+                for op,metrics in value.items():
+                    if op == operation:
+                        for met in metrics:
+                            if met == metric:
+                                val = float(metrics[met])
+                                if val > ret_max:
+                                    ret_max = val
+                                    ret_stage_name = key
+                                    ret_operation = op
+                                    ret_metric = met
+        return self._filename,ret_stage_name, ret_operation, ret_metric, ret_max
 
     def _validateFileFormat(self):
         # TODO
