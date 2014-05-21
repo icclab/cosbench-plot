@@ -14,7 +14,7 @@ class StageFilePlotter(FilePlotter):
         super(StageFilePlotter, self).__init__(title)
         self._unit = ''
         self._onlyAvg = False
-        self._linestilerule = lambda: '-'
+        self._linestilerule = lambda(label): '-'
 
     def addDataArray(self, data, label = '', unit=''):
         self._unit = unit

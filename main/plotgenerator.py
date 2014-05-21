@@ -209,7 +209,7 @@ class StagePlotGenerator(PlotGenerator):
                             # We want to plot this data
                             sfpl.addDataArray(data.data, stats[FileParser.ANNOTATION] + '_' + re.search(labelregex, wstitle).group(1), data.headerType.unit)
 #         sfpl.plotOnlyAvg(True)
-        sfpl.plot(show = False, saveto = self._outdir + title + '.png')
+        sfpl.plot(show = False, saveto = self._outdir + title + '.svg')
 
     def _extractStageTitleFromFileName(self, ws_filename):
         match = re.search('(^s[0-9]+-w)(.*)(\.csv)', ws_filename)
@@ -263,7 +263,7 @@ class StagePlotGenerator(PlotGenerator):
                     sfpl.addDataArray(stat[datakey].data, stat[FileParser.ANNOTATION], stat[datakey].headerType.unit)
                 if sfpl.containsData():
                     # Only if there is data to plot
-                    sfpl.plot(show = False, saveto = self._outdir + title + '_' + name + '_' + operation + '.png')
+                    sfpl.plot(show = False, saveto = self._outdir + title + '_' + name + '_' + operation + '.svg')
         return
 
     def _filterStats(self, statname):
@@ -279,26 +279,47 @@ class WorkloadPlotGenerator(PlotGenerator):
     def __init__(self, basepath, outdir):
         super(WorkloadPlotGenerator, self).__init__(basepath, outdir)
         self._workload_file_re_filter = '^w[0-9]+-((?!rt-histogram).)*\.csv'
+        self._unit = None
 
-    def createWorkloadsMaxChart(self, stage_filter, operation, metric):
+    def setUnit(self, unit):
+        self._unit = unit
+
+    def createWorkloadsMaxChart(self, stage_filter, operation, metric, title, xlabelregex, annotationregex):
+        '''
+        @param stage_filter a regular expression to be applied to the name of stages. 
+        If a name matches, that stage is considered in the statistics
+        @param operation the operation to be plot (e.g., 'read')
+        @param metric the metric to be plot (e.g., 'Throughput')
+        @param title the title for the plot
+        @param xlabelregex the regular expression that, applied to the file name
+        of workload statistics, gives the label for the xtick in the match group(1).
+        There will be one xtick for each tuple of corresponding workspace files of each storage
+        system
+        @param annotationregex the regex that applied to the stagename provides
+        the text to be used as annotation for the single point related to that
+        stage. The match would be for group(1)
+        '''
         comparabledata = []
+        maxplotter = WorkloadMaxPlotter(title)
         for filenameslist,storagename in self._generateListsOfComparableFiles(self._workload_file_re_filter):
-            maxplotter = WorkloadMaxPlotter('cciaii')
-            maxplotter.setPositionalLabels(['ceph', 'swift'])
-            for index,filenames in enumerate(filenameslist):
-                for filename in filenames:
-                    parser = WorkLoadFileParser(filename)
-                    parser.loadStatistics()
-                    comparabledata.append(parser.getMaxValue(stage_filter, operation, metric))
-        # For all files, comparabledata has a list of tuples (one element for each storage system) and
-        # each tuple lists the elements describing the found max
-        values = []
-        annotations = []
-        for storagedata in comparabledata:
-            # For each information of one storage system
-            filename, stagename, operation, metric, value = storagedata
-            xtick = re.search('^w[0-9]+-([0-9]+cont_.*)\.csv', os.path.basename(filename)).group(1)
-            values.append(value)
-            annotations.append(re.search('_([0-9]+)$', stagename).group(1))
-        maxplotter.addPoint(xtick, values, annotations)
-        maxplotter.plot(show=True)
+            maxplotter.setPositionalLabels(storagename)
+            comparabledata = []
+            for filenames in filenameslist:
+                # There is only one workload file per workload
+                assert(len(filenames) == 1)
+                filename = filenames[0]
+                parser = WorkLoadFileParser(filename)
+                parser.loadStatistics()
+                comparabledata.append(parser.getMaxValue(stage_filter, operation, metric))
+            # Here comparabledata is a list of max information for each storage system
+            values = []
+            yannotations = []
+            for maxdatainfo in comparabledata:
+                filename, stagename, operation, metric, value = maxdatainfo
+                xlabel = re.search(xlabelregex, os.path.basename(filename)).group(1)
+                values.append(value)
+                yannotations.append(re.search(annotationregex, stagename).group(1))
+            maxplotter.addPoint(xlabel, values, yannotations)
+        if self._unit is not None:
+            maxplotter.setUnit(self._unit)
+        maxplotter.plot(show=False, saveto = self._outdir + title + '_' + metric + '_' + operation + '.svg')

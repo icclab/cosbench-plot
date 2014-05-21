@@ -5,8 +5,6 @@ Created on May 8, 2014
 '''
 from cosbenchplot.main.plotgenerator import StagePlotGenerator,\
     WorkloadPlotGenerator
-from cosbenchplot.parser.StageFileParser import StageFileParser
-from cosbenchplot.parser.WorkLoadFileParser import WorkLoadFileParser
 
 BP = '/home/vince/cosbench-data/results/'
 
@@ -58,17 +56,26 @@ def createAggregatedGraphsForStages():
         plotgen.setFilenameFilter('r0w100d0')
         plotgen.createAggregatedChart(outdir, workloadFilter[1] + "100% write - Write bandwidth", '_([0-9]+)$', ['Bandwidthwrite'], lineStyleRule)
         plotgen.setFilenameFilter('r80w15d5')
-        plotgen.createAggregatedChart(outdir, workloadFilter[1] + "r:80% w:15% d:5% - Write bandwidth", '_([0-9]+)$', ['Bandwidthread'], lineStyleRule)
+        plotgen.createAggregatedChart(outdir, workloadFilter[1] + "r:80% w:15% d:5% - Write bandwidth", '_([0-9]+)$', ['Bandwidthwrite'], lineStyleRule)
         plotgen.createAggregatedChart(outdir, workloadFilter[1] + "r:80% w:15% d:5% - Read bandwidth", '_([0-9]+)$', ['Bandwidthread'], lineStyleRule)
 
-def test():
-    outdir = '/home/vince/cosbench-data/graphs/test/'
+def createMaxWorkloadsCharts():
+    '''
+    These charts plot, for each workloads of each storage system, a single point
+    representing the maximum of the averages for that given metric across all the
+    available workstages (the ones that are not filtered out).
+    '''
+    outdir = '/home/vince/cosbench-data/graphs/workstages-throughput/'
     wlplotgen = WorkloadPlotGenerator(BP, outdir)
     wlplotgen.addWorkloadIds('ceph', ceph_workload_ids)
     wlplotgen.addWorkloadIds('swift', swift_workload_ids)
-    wlplotgen.createWorkloadsMaxChart('r100w0d0', 'read', 'Throughput')
+    wlplotgen.setUnit('op/s')
+    wlplotgen.createWorkloadsMaxChart('r100w0d0', 'read', 'Throughput', '100% read - Read throughput - Max of workstage averages', '^w[0-9]+-([0-9]+cont_.*)\.csv', '_([0-9]+)$')
+    wlplotgen.createWorkloadsMaxChart('r0w100d0', 'write', 'Throughput', '100% write - Write throughput - Max of workstage averages', '^w[0-9]+-([0-9]+cont_.*)\.csv', '_([0-9]+)$')
+    wlplotgen.createWorkloadsMaxChart('r80w15d5', 'read', 'Throughput', 'r:80% w:15% d:5% - Read throughput - Max of workstage averages', '^w[0-9]+-([0-9]+cont_.*)\.csv', '_([0-9]+)$')
+    wlplotgen.createWorkloadsMaxChart('r80w15d5', 'write', 'Throughput', 'r:80% w:15% d:5% - Write throughput - Max of workstage averages', '^w[0-9]+-([0-9]+cont_.*)\.csv', '_([0-9]+)$')
 
 if __name__ == '__main__':
-    #createStageGraphsForEachStat()
-    #createAggregatedGraphsForStages()
-    test()
+    createStageGraphsForEachStat()
+    createAggregatedGraphsForStages()
+    createMaxWorkloadsCharts()
