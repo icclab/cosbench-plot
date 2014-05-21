@@ -4,7 +4,7 @@ Created on May 8, 2014
 @author: vince
 '''
 from cosbenchplot.main.plotgenerator import StagePlotGenerator,\
-    WorkloadPlotGenerator
+    WorkloadPlotGenerator, RTPlotGenerator
 
 BP = '/home/vince/cosbench-data/results/'
 
@@ -75,7 +75,16 @@ def createMaxWorkloadsCharts():
     wlplotgen.createWorkloadsMaxChart('r80w15d5', 'read', 'Throughput', 'r:80% w:15% d:5% - Read throughput - Max of workstage averages', '^w[0-9]+-([0-9]+cont_.*)\.csv', '_([0-9]+)$')
     wlplotgen.createWorkloadsMaxChart('r80w15d5', 'write', 'Throughput', 'r:80% w:15% d:5% - Write throughput - Max of workstage averages', '^w[0-9]+-([0-9]+cont_.*)\.csv', '_([0-9]+)$')
 
+def createIndividualRtCharts():
+    outdir = '/home/vince/cosbench-data/graphs/test/'
+    plotgen = RTPlotGenerator(BP, outdir)
+    plotgen.addWorkloadIds('ceph', ceph_workload_ids)
+    plotgen.addWorkloadIds('swift', swift_workload_ids)
+    plotgen.createRtPlots('r:80% w:15% d:5% - Response time ceph', ['ceph'], 'w[0-9]+-20cont_5mb', '.*r80w15d5_(64|256|512).*main-read')
+    plotgen.createRtPlots('r:80% w:15% d:5% - Response time swift', ['swift'], 'w[0-9]+-20cont_5mb', '.*r80w15d5_(64|256|512).*main-read')
+
 if __name__ == '__main__':
-    createStageGraphsForEachStat()
-    createAggregatedGraphsForStages()
-    createMaxWorkloadsCharts()
+    #createStageGraphsForEachStat()
+    #createAggregatedGraphsForStages()
+    #createMaxWorkloadsCharts()
+    createIndividualRtCharts()

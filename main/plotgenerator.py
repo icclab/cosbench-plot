@@ -10,6 +10,8 @@ from cosbenchplot.plotter.StageFilePlotter import StageFilePlotter
 from cosbenchplot.parser.FileParser import FileParser
 from cosbenchplot.parser.WorkLoadFileParser import WorkLoadFileParser
 from cosbenchplot.plotter.WorkloadMaxPlotter import WorkloadMaxPlotter
+from cosbenchplot.plotter.RTFilePlotter import RTFilePlotter
+from cosbenchplot.parser.RTFileParser import RTFileParser
 
 class PlotGenerator(object):
     '''
@@ -145,12 +147,42 @@ class PlotGenerator(object):
 
 class RTPlotGenerator(PlotGenerator):
     
-    def __init__(self):
-        super(RTPlotGenerator, self).__init__()
+    def __init__(self, basepath, outdir):
+        super(RTPlotGenerator, self).__init__(basepath, outdir)
+        self._realtime_histogram_file_re_filter = '^w[0-9]+-.*rt-histogram\.csv'
 
-    def createAllRtPlots(self):
-        # TODO
-        pass
+    def createRtPlots(self, title, storage_name, workload_filter, stage_filter):
+        plotter = RTFilePlotter(title)
+        filesToAnalyze = self._getFilteredFileNames(storage_name, workload_filter, stage_filter)
+        for key,files in filesToAnalyze.items():
+            for filename in files:
+                parser = RTFileParser(filename)
+                stats = parser.loadStatistics()
+                for key,values in stats.items():
+                    if (key.endswith(RTFileParser.PCT_SFX)):
+                        continue
+                    # key here are the workstage names
+                    match = re.search(stage_filter, key)
+                    if match is not None:
+                        plotter.addDataAndCdfArrays(match.group(1), stats[key], stats[key+RTFileParser.PCT_SFX], stats[RTFileParser.RES_TIME_HDR])
+        plotter.plot(saveto=self._outdir + title + '.svg')
+
+
+    def _getFilteredFileNames(self, storage_name, workload_filter, stage_filter):
+        filesToAnalyze = {}
+        for name in storage_name:
+            filesToAnalyze[name] = []
+        for comparablefiles,storagename in self._generateListsOfComparableFiles(self._realtime_histogram_file_re_filter):
+            for storage_index,filenames in enumerate(comparablefiles):
+                # There is only one workload file per workload
+                assert(len(filenames) == 1)
+                filename = filenames[0]
+                if (storagename[storage_index] not in storage_name):
+                    continue
+                if re.search(workload_filter, os.path.basename(filename)) is None:
+                    continue
+                filesToAnalyze[storagename[storage_index]].append(filename)
+        return filesToAnalyze
 
 class StagePlotGenerator(PlotGenerator):
     '''

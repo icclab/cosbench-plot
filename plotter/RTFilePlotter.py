@@ -36,16 +36,17 @@ class RTFilePlotter(FilePlotter):
         cdf_ax = data_ax.twinx()
         for (label,desc) in self._cdfDataArrays.items():
             color = self._getNextColor()
-            data_ax.plot(desc._xticks, desc._data, linestyle=":", color = color)
-            cdf_ax.plot(desc._xticks, desc._cdf, linestyle="-", color = color, label=label)
+            data_ax.plot(desc._xticks, desc._data, linestyle=":", linewidth=0.5, color = color)
+            cdf_ax.plot(desc._xticks, desc._cdf, linestyle="-", linewidth=2.0, color = color, label=label)
         data_ax.set_xlabel('Time (ms)')
         data_ax.set_ylabel('Number of samples')
         cdf_ax.set_ylabel('CDF')
         cdf_ax.legend(loc='center right', shadow=True)
         plt.grid(True)
-        plt.autoscale(True, 'both', True)
+        #plt.autoscale(True, 'both', True)
         plt.title(self._title)
-        fig.set_tight_layout(True)
+        #fig.set_tight_layout(True)
+        plt.tight_layout()
         return plt
 
     def _getXTicks(self, xarray):
