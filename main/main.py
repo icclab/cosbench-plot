@@ -3,8 +3,9 @@ Created on May 8, 2014
 
 @author: vince
 '''
-from cosbenchplot.main.plotgenerator import StagePlotGenerator,\
+from cosbenchplot.plotter.plotgenerator import StagePlotGenerator,\
     WorkloadPlotGenerator, RTPlotGenerator
+from cosbenchplot.parser.StageFileParser import StageFileParser
 
 BP = '/home/vince/cosbench-data/results/'
 
@@ -14,11 +15,11 @@ ceph_workload_ids.extend([i for i in range(44,55)])
 swift_workload_ids = [i for i in range(57, 69)]
 
 def createStageGraphsForEachStat():
-    STAGE_OUT_DIR='/home/vince/cosbench-data/graphs/stage/'
-    plotgen = StagePlotGenerator(BP, STAGE_OUT_DIR)
+    outdir='/home/vince/cosbench-data/graphs/stage/'
+    plotgen = StagePlotGenerator(BP, outdir)
     plotgen.addWorkloadIds('ceph', ceph_workload_ids)
     plotgen.addWorkloadIds('swift', swift_workload_ids)
-    plotgen.createAllStagePlots(STAGE_OUT_DIR)
+    plotgen.createAllStagePlots(outdir)
 
 def createAggregatedGraphsForStages():
     lineStyleRule = lambda stname: '-' if 'ceph' in stname else '--'
@@ -65,15 +66,16 @@ def createMaxWorkloadsCharts():
     representing the maximum of the averages for that given metric across all the
     available workstages (the ones that are not filtered out).
     '''
-    outdir = '/home/vince/cosbench-data/graphs/workstages-throughput/'
-    wlplotgen = WorkloadPlotGenerator(BP, outdir)
-    wlplotgen.addWorkloadIds('ceph', ceph_workload_ids)
-    wlplotgen.addWorkloadIds('swift', swift_workload_ids)
-    wlplotgen.setUnit('op/s')
-    wlplotgen.createWorkloadsMaxChart('r100w0d0', 'read', 'Throughput', '100% read - Read throughput - Max of workstage averages', '^w[0-9]+-([0-9]+cont_.*)\.csv', '_([0-9]+)$')
-    wlplotgen.createWorkloadsMaxChart('r0w100d0', 'write', 'Throughput', '100% write - Write throughput - Max of workstage averages', '^w[0-9]+-([0-9]+cont_.*)\.csv', '_([0-9]+)$')
-    wlplotgen.createWorkloadsMaxChart('r80w15d5', 'read', 'Throughput', 'r:80% w:15% d:5% - Read throughput - Max of workstage averages', '^w[0-9]+-([0-9]+cont_.*)\.csv', '_([0-9]+)$')
-    wlplotgen.createWorkloadsMaxChart('r80w15d5', 'write', 'Throughput', 'r:80% w:15% d:5% - Write throughput - Max of workstage averages', '^w[0-9]+-([0-9]+cont_.*)\.csv', '_([0-9]+)$')
+    for study in ['Throughput', 'Bandwidth']:
+        outdir = '/home/vince/cosbench-data/graphs/workstages-{}/'.format(study.lower())
+        wlplotgen = WorkloadPlotGenerator(BP, outdir)
+        wlplotgen.addWorkloadIds('ceph', ceph_workload_ids)
+        wlplotgen.addWorkloadIds('swift', swift_workload_ids)
+        wlplotgen.setUnit(StageFileParser.HeaderTypes.headers[study].unit)
+        wlplotgen.createWorkloadsMaxChart('r100w0d0', 'read', study, '100% read - Read ' + study + ' - Max of workstage averages', '^w[0-9]+-([0-9]+cont_.*)\.csv', '_([0-9]+)$')
+        wlplotgen.createWorkloadsMaxChart('r0w100d0', 'write', study, '100% write - Write ' + study + ' - Max of workstage averages', '^w[0-9]+-([0-9]+cont_.*)\.csv', '_([0-9]+)$')
+        wlplotgen.createWorkloadsMaxChart('r80w15d5', 'read', study, 'r:80% w:15% d:5% - Read ' + study + ' - Max of workstage averages', '^w[0-9]+-([0-9]+cont_.*)\.csv', '_([0-9]+)$')
+        wlplotgen.createWorkloadsMaxChart('r80w15d5', 'write', study, 'r:80% w:15% d:5% - Write ' + study + ' - Max of workstage averages', '^w[0-9]+-([0-9]+cont_.*)\.csv', '_([0-9]+)$')
 
 def createIndividualRtCharts():
     outdir = '/home/vince/cosbench-data/graphs/responsetime/'
@@ -83,6 +85,8 @@ def createIndividualRtCharts():
     plotgen.createRtPlots('RT ceph - r:80% w:15% d:5% - Read 20cont_5mb', ['ceph'], 'w[0-9]+-20cont_5mb', '.*r80w15d5_(64|256|512).*main-read')
     plotgen.createRtPlots('RT swift - r:80% w:15% d:5% - Read 20cont_5mb', ['swift'], 'w[0-9]+-20cont_5mb', '.*r80w15d5_(64|256|512).*main-read')
     plotgen.createRtPlots('RT swift and ceph - r:80% w:15% d:5% - Read 1cont_10mb', ['swift','ceph'], 'w[0-9]+-1cont_10mb', '.*r80w15d5_(16|64|256|512).*main-read')
+    plotgen.createRtPlots('RT swift and ceph - r:80% w:15% d:5% - Write 20cont_10mb', ['swift','ceph'], 'w[0-9]+-1cont_10mb', '.*r80w15d5_(16|512).*main-write')
+    plotgen.createRtPlots('RT swift - r:80% w:15% d:5% - Write 20cont_10mb', ['swift'], 'w[0-9]+-1cont_10mb', '.*r80w15d5_(16).*main-write')
 
 if __name__ == '__main__':
     #createStageGraphsForEachStat()
