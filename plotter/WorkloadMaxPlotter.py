@@ -32,7 +32,7 @@ class WorkloadMaxPlotter(FilePlotter):
         self._positionalLabels = labels
 
     def plotImpl(self):
-        fig, data_ax = plt.subplots()
+        _, data_ax = plt.subplots()
         xticks = []
         yvalues = [[] for _ in range(len(self._points[0].values))]
         annotations = [[] for _ in range(len(self._points[0].values))]

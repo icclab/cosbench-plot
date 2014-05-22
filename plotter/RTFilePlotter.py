@@ -32,7 +32,7 @@ class RTFilePlotter(FilePlotter):
         raise Exception('This method is not available for RT plots, use addDataAndCdfArrays')
 
     def plotImpl(self):
-        fig, data_ax = plt.subplots()
+        _, data_ax = plt.subplots()
         cdf_ax = data_ax.twinx()
         for (label,desc) in self._cdfDataArrays.items():
             color = self._getNextColor()

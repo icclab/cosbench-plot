@@ -158,7 +158,7 @@ class RTPlotGenerator(PlotGenerator):
             for filename in files:
                 parser = RTFileParser(filename)
                 stats = parser.loadStatistics()
-                for key,values in stats.items():
+                for key in stats.keys():
                     if (key.endswith(RTFileParser.PCT_SFX)):
                         continue
                     # key here are the workstage names
