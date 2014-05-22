@@ -154,7 +154,7 @@ class RTPlotGenerator(PlotGenerator):
     def createRtPlots(self, title, storage_name, workload_filter, stage_filter):
         plotter = RTFilePlotter(title)
         filesToAnalyze = self._getFilteredFileNames(storage_name, workload_filter, stage_filter)
-        for key,files in filesToAnalyze.items():
+        for storage_name,files in filesToAnalyze.items():
             for filename in files:
                 parser = RTFileParser(filename)
                 stats = parser.loadStatistics()
@@ -164,7 +164,7 @@ class RTPlotGenerator(PlotGenerator):
                     # key here are the workstage names
                     match = re.search(stage_filter, key)
                     if match is not None:
-                        plotter.addDataAndCdfArrays(match.group(1), stats[key], stats[key+RTFileParser.PCT_SFX], stats[RTFileParser.RES_TIME_HDR])
+                        plotter.addDataAndCdfArrays(storage_name + ' ' + match.group(1), stats[key], stats[key+RTFileParser.PCT_SFX], stats[RTFileParser.RES_TIME_HDR])
         plotter.plot(saveto=self._outdir + title + '.svg')
 
 

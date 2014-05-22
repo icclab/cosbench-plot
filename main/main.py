@@ -80,8 +80,9 @@ def createIndividualRtCharts():
     plotgen = RTPlotGenerator(BP, outdir)
     plotgen.addWorkloadIds('ceph', ceph_workload_ids)
     plotgen.addWorkloadIds('swift', swift_workload_ids)
-    plotgen.createRtPlots('r:80% w:15% d:5% - Response time ceph', ['ceph'], 'w[0-9]+-20cont_5mb', '.*r80w15d5_(64|256|512).*main-read')
-    plotgen.createRtPlots('r:80% w:15% d:5% - Response time swift', ['swift'], 'w[0-9]+-20cont_5mb', '.*r80w15d5_(64|256|512).*main-read')
+    plotgen.createRtPlots('RT ceph - r:80% w:15% d:5% - Read 20cont_5mb', ['ceph'], 'w[0-9]+-20cont_5mb', '.*r80w15d5_(64|256|512).*main-read')
+    plotgen.createRtPlots('RT swift - r:80% w:15% d:5% - Read 20cont_5mb', ['swift'], 'w[0-9]+-20cont_5mb', '.*r80w15d5_(64|256|512).*main-read')
+    plotgen.createRtPlots('RT swift and ceph - r:80% w:15% d:5% - Read 1cont_10mb', ['swift','ceph'], 'w[0-9]+-1cont_10mb', '.*r80w15d5_(16|64|256|512).*main-read')
 
 if __name__ == '__main__':
     #createStageGraphsForEachStat()
