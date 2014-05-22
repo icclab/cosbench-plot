@@ -76,7 +76,7 @@ def createMaxWorkloadsCharts():
     wlplotgen.createWorkloadsMaxChart('r80w15d5', 'write', 'Throughput', 'r:80% w:15% d:5% - Write throughput - Max of workstage averages', '^w[0-9]+-([0-9]+cont_.*)\.csv', '_([0-9]+)$')
 
 def createIndividualRtCharts():
-    outdir = '/home/vince/cosbench-data/graphs/test/'
+    outdir = '/home/vince/cosbench-data/graphs/responsetime/'
     plotgen = RTPlotGenerator(BP, outdir)
     plotgen.addWorkloadIds('ceph', ceph_workload_ids)
     plotgen.addWorkloadIds('swift', swift_workload_ids)

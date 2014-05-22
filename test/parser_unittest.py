@@ -20,12 +20,12 @@ class Test(unittest.TestCase):
         assert(stats[4][143] == '648000')
 
     def testStageFilesFullStats(self):
-        sfp = StageFileParser("s2-w(4)KB_c1_o1000_r80w15d5_1.csv")
+        sfp = StageFileParser("s2-w(4)KB_c1_o1000_r80w15d5_1.csv", 'test')
         stats = sfp.loadStatistics()
         assert(stats[StageFileParser.HeaderTypes.TIMESTAMP+''].data[0] == '09:45:45')
         assert(stats[StageFileParser.HeaderTypes.OP_COUNT+StageFileParser.Operations.OP_WRITE].data[5] == '89')
         assert(stats[StageFileParser.HeaderTypes.AVG_PROC_TIME+StageFileParser.Operations.OP_READ].data[120] == '2.68')
-        assert(stats[StageFileParser.HeaderTypes.AVG_PROC_TIME+StageFileParser.Operations.OP_READ].headerType.name == 'Avg-ResTime')
+        assert(stats[StageFileParser.HeaderTypes.AVG_PROC_TIME+StageFileParser.Operations.OP_READ].headerType.name == 'Avg-ProcTime')
         assert(stats[StageFileParser.HeaderTypes.AVG_PROC_TIME+StageFileParser.Operations.OP_READ].headerType.unit == 'ms')
 
     def testRTFileFullStats(self):
