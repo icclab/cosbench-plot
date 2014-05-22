@@ -52,7 +52,7 @@ class Test(unittest.TestCase):
         for index,parser in enumerate(parsers):
             data = parser.getAnyStageValue('read', 'Bandwidth')
             plotter.addDataArray(data, os.path.basename(files[index]).split('.')[0])
-        plotter.plot(show=True)
+        plotter.plot()
 
     def testUniqueLabels(self):
         plotter = ScatterPlotter('xx')
@@ -100,5 +100,4 @@ class Test(unittest.TestCase):
         sfpl.plot()
 
 if __name__ == "__main__":
-    #import sys;sys.argv = ['', 'Test.testScatterPlot']
     unittest.main()
