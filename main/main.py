@@ -8,14 +8,16 @@ from cosbenchplot.plotter.plotgenerator import StagePlotGenerator,\
 from cosbenchplot.parser.StageFileParser import StageFileParser
 
 BP = '/home/vince/cosbench-data/results/'
+BASE_OUTPUT = '/home/vince/cosbench-data/graphs-ii/'
 
 ceph_workload_ids = [55]
 ceph_workload_ids.extend([i for i in range(44,55)])
 
-swift_workload_ids = [i for i in range(57, 69)]
+#swift_workload_ids = [i for i in range(57, 69)]
+swift_workload_ids = [i for i in range(69, 81)]
 
 def createStageGraphsForEachStat():
-    outdir='/home/vince/cosbench-data/graphs/stage/'
+    outdir=BASE_OUTPUT + '/stage/'
     plotgen = StagePlotGenerator(BP, outdir)
     plotgen.addWorkloadIds('ceph', ceph_workload_ids)
     plotgen.addWorkloadIds('swift', swift_workload_ids)
@@ -35,7 +37,7 @@ def createAggregatedGraphsForStages():
                        ('\/w[0-9]+-20cont_1024kb$', '20 cont - 1024kb - '),
                        ('\/w[0-9]+-20cont_5mb$', '20 cont - 5mb - '),
                        ('\/w[0-9]+-20cont_10mb$', '20 cont - 10mb - ')]
-    outdir = '/home/vince/cosbench-data/graphs/throughput/'
+    outdir = BASE_OUTPUT + '/throughput/'
     plotgen = StagePlotGenerator(BP, outdir)
     plotgen.addWorkloadIds('ceph', ceph_workload_ids)
     plotgen.addWorkloadIds('swift', swift_workload_ids)
@@ -48,7 +50,7 @@ def createAggregatedGraphsForStages():
         plotgen.setFilenameFilter('r80w15d5')
         plotgen.createAggregatedChart(outdir, workloadFilter[1] + "r:80% w:15% d:5% - Write throughput", '_([0-9]+)$', ['Throughputwrite'], lineStyleRule)
         plotgen.createAggregatedChart(outdir, workloadFilter[1] + "r:80% w:15% d:5% - Read throughput", '_([0-9]+)$', ['Throughputread'], lineStyleRule)
-    outdir = '/home/vince/cosbench-data/graphs/bandwidth/'
+    outdir = BASE_OUTPUT + '/bandwidth/'
     plotgen._outdir = outdir
     for workloadFilter in workloadFilters:
         plotgen.setWorkloadFilter(workloadFilter[0])
@@ -66,8 +68,8 @@ def createMaxWorkloadsCharts():
     representing the maximum of the averages for that given metric across all the
     available workstages (the ones that are not filtered out).
     '''
-    for study in ['Throughput', 'Bandwidth']:
-        outdir = '/home/vince/cosbench-data/graphs/workstages-{}/'.format(study.lower())
+    for study in ['Throughput', 'Bandwidth', 'Succ-Ratio']:
+        outdir = BASE_OUTPUT + '/workstages-{}/'.format(study.lower())
         wlplotgen = WorkloadPlotGenerator(BP, outdir)
         wlplotgen.addWorkloadIds('ceph', ceph_workload_ids)
         wlplotgen.addWorkloadIds('swift', swift_workload_ids)
@@ -78,7 +80,7 @@ def createMaxWorkloadsCharts():
         wlplotgen.createWorkloadsMaxChart('r80w15d5', 'write', study, 'r:80% w:15% d:5% - Write ' + study + ' - Max of workstage averages', '^w[0-9]+-([0-9]+cont_.*)\.csv', '_([0-9]+)$')
 
 def createIndividualRtCharts():
-    outdir = '/home/vince/cosbench-data/graphs/responsetime/'
+    outdir = BASE_OUTPUT + '/responsetime/'
     plotgen = RTPlotGenerator(BP, outdir)
     plotgen.addWorkloadIds('ceph', ceph_workload_ids)
     plotgen.addWorkloadIds('swift', swift_workload_ids)
@@ -87,9 +89,14 @@ def createIndividualRtCharts():
     plotgen.createRtPlots('RT swift and ceph - r:80% w:15% d:5% - Read 1cont_10mb', ['swift','ceph'], 'w[0-9]+-1cont_10mb', '.*r80w15d5_(16|64|256|512).*main-read')
     plotgen.createRtPlots('RT swift and ceph - r:80% w:15% d:5% - Write 20cont_10mb', ['swift','ceph'], 'w[0-9]+-1cont_10mb', '.*r80w15d5_(16|512).*main-write')
     plotgen.createRtPlots('RT swift - r:80% w:15% d:5% - Write 20cont_10mb', ['swift'], 'w[0-9]+-1cont_10mb', '.*r80w15d5_(16).*main-write')
+    plotgen.createRtPlots('RT swift - 100% Read - Read 1cont_1024kb', ['swift'], 'w[0-9]+-1cont_1024kb', '.*r100w0d0_(16|64|128|256|512).*main-read')
+    plotgen.createRtPlots('RT ceph - 100% Read - Read 1cont_1024kb', ['ceph'], 'w[0-9]+-1cont_1024kb', '.*r100w0d0_(16|64|128|256|512).*main-read')
+    plotgen.createRtPlots('RT swift - 100% Read - Read 1cont_128kb', ['swift'], 'w[0-9]+-1cont_128kb', '.*r100w0d0_(16|64|128|256|512).*main-read')
+    plotgen.createRtPlots('RT ceph - 100% Read - Read 1cont_128kb', ['ceph'], 'w[0-9]+-1cont_128kb', '.*r100w0d0_(16|64|128|256|512).*main-read')
+    
 
 if __name__ == '__main__':
     #createStageGraphsForEachStat()
     #createAggregatedGraphsForStages()
-    #createMaxWorkloadsCharts()
-    createIndividualRtCharts()
+    createMaxWorkloadsCharts()
+    #createIndividualRtCharts()

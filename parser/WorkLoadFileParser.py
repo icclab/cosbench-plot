@@ -22,7 +22,7 @@ class WorkLoadFileParser(FileParser):
             headers = f.next().strip().split(',')
             for line in f:
                 tokens = line.strip().split(',')
-                for index,value in enumerate(tokens[3:15]):
+                for index,value in enumerate(tokens[3:16]):
                     d[tokens[0]][tokens[2]][headers[index+3]] = value
         return d
 
@@ -56,6 +56,9 @@ class WorkLoadFileParser(FileParser):
                     if op == operation:
                         for met in metrics:
                             if met == metric:
+                                metrics[met] = metrics[met].replace('%', '')
+                                if metrics[met] == 'N/A':
+                                    continue
                                 val = float(metrics[met])
                                 if val > ret_max:
                                     ret_max = val
