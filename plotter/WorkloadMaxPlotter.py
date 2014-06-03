@@ -56,7 +56,7 @@ class WorkloadMaxPlotter(FilePlotter):
         #fig.set_tight_layout(True)
         if self._unit is not None:
             data_ax.set_ylabel(self._unit)
-        data_ax.legend(loc='lower right', fancybox=True, shadow=True, prop={'size':11}, bbox_to_anchor=(1, 1.02))
+        data_ax.legend(loc='best', fancybox=True, shadow=True, prop={'size':11})
         plt.title(self._title)
         plt.tight_layout()
         return plt
