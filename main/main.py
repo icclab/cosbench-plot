@@ -93,6 +93,7 @@ def createIndividualRtCharts():
     plotgen.createRtPlots('RT ceph - 100% Read - Read 1cont_1024kb', ['ceph'], 'w[0-9]+-1cont_1024kb', '.*r100w0d0_(16|64|128|256|512).*main-read')
     plotgen.createRtPlots('RT swift - 100% Read - Read 1cont_128kb', ['swift'], 'w[0-9]+-1cont_128kb', '.*r100w0d0_(16|64|128|256|512).*main-read')
     plotgen.createRtPlots('RT ceph - 100% Read - Read 1cont_128kb', ['ceph'], 'w[0-9]+-1cont_128kb', '.*r100w0d0_(16|64|128|256|512).*main-read')
+    plotgen.createRtPlots('RT ceph and swift - 100% Read - Read 20cont_1024kb', ['ceph','swift'], 'w[0-9]+-20cont_1024kb', '.*r100w0d0_(256|512).*main-read')
     
 
 if __name__ == '__main__':
