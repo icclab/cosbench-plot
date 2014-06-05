@@ -194,6 +194,10 @@ class StagePlotGenerator(PlotGenerator):
     def __init__(self, basepath, outdir):
         super(StagePlotGenerator, self).__init__(basepath, outdir)
         self._workstage_file_re_filter = '^s[0-9]+-w'
+        self._onlyAVg = False
+
+    def plotOnlyAverage(self):
+        self._onlyAVg = True
 
     def createAllStagePlots(self, outputdir):
         '''
@@ -288,6 +292,8 @@ class StagePlotGenerator(PlotGenerator):
                 if self._filterStats(name):
                     continue
                 sfpl = StageFilePlotter(title + ' - ' + name + ' - ' + operation)
+                if self._onlyAVg:
+                    sfpl.plotOnlyAvg(True)
                 datakey = name + operation
                 for stat in statisticsArray:
                     if stat.has_key(datakey) == False:
