@@ -97,6 +97,7 @@ def createMaxWorkloadsCharts():
         wlplotgen.createWorkloadsMaxChart('r0w100d0', 'write', study, '100% write - Write ' + study + ' - Max of workstage averages', '^w[0-9]+-([0-9]+cont_.*)\.csv', '_([0-9]+)$')
         wlplotgen.createWorkloadsMaxChart('r80w15d5', 'read', study, 'r:80% w:15% d:5% - Read ' + study + ' - Max of workstage averages', '^w[0-9]+-([0-9]+cont_.*)\.csv', '_([0-9]+)$')
         wlplotgen.createWorkloadsMaxChart('r80w15d5', 'write', study, 'r:80% w:15% d:5% - Write ' + study + ' - Max of workstage averages', '^w[0-9]+-([0-9]+cont_.*)\.csv', '_([0-9]+)$')
+        wlplotgen.createWorkloadsMaxChart('r80w15d5', 'delete', study, 'r:80% w:15% d:5% - Delete ' + study + ' - Max of workstage averages', '^w[0-9]+-([0-9]+cont_.*)\.csv', '_([0-9]+)$')
 
 def createIndividualRtCharts():
     outdir = BASE_OUTPUT + '/responsetime/'
@@ -121,5 +122,5 @@ def createIndividualRtCharts():
 if __name__ == '__main__':
     #createStageGraphsForEachStat()
     #createAggregatedGraphsForStages()
-    #createMaxWorkloadsCharts()
-    createIndividualRtCharts()
+    createMaxWorkloadsCharts()
+    #createIndividualRtCharts()

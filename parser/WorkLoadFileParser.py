@@ -65,7 +65,7 @@ class WorkLoadFileParser(FileParser):
     def getMaxValue(self, stage_filter, operation, metric):
         if len(self.statistics) == 0:
             raise Exception("No statistic to analyze")
-        ret_max = 0
+        ret_max = -1
         ret_stage_name = None
         ret_operation = None
         ret_metric = None
