@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 '''
 Copyright 2014 ZHAW (Zürcher Hochschule für Angewandte Wissenschaften)
 
