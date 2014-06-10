@@ -1,3 +1,4 @@
+from __future__ import division
 # -*- coding: utf-8 -*-
 
 '''
@@ -23,7 +24,6 @@ Created on May 13, 2014
 @author: vince
 '''
 
-from __future__ import division
 import matplotlib.pyplot as plt
 import random
 from cosbenchplot.plotter.FilePlotter import FilePlotter
