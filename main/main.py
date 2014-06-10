@@ -117,10 +117,11 @@ def createIndividualRtCharts():
     plotgen.createRtPlots('RT ceph and swift - 100% write - Write 20cont_512kb', ['ceph','swift'], 'w[0-9]+-20cont_512kb', '.*r0w100d0_(128|512).*main-write')
     plotgen.createRtPlots('RT ceph and swift - 100% write - Write 20cont_5mb', ['ceph','swift'], 'w[0-9]+-20cont_5mb', '.*r0w100d0_(128|512).*main-write')
     plotgen.createRtPlots('RT ceph and swift - 100% write - Write 20cont_10mb', ['ceph','swift'], 'w[0-9]+-20cont_10mb', '.*r0w100d0_(128|512).*main-write')
-    
+    plotgen.createRtPlots('RT ceph - r:80% w:15% d:5% - Read 1cont_4kb', ['ceph'], 'w[0-9]+-1cont_4kb', '.*r80w15d5_(64|256|512).*main-read')
+    plotgen.createRtPlots('RT swift - r:80% w:15% d:5% - Read 1cont_4kb', ['swift'], 'w[0-9]+-1cont_4kb', '.*r80w15d5_(64|256|512).*main-read')
 
 if __name__ == '__main__':
     #createStageGraphsForEachStat()
     #createAggregatedGraphsForStages()
-    createMaxWorkloadsCharts()
-    #createIndividualRtCharts()
+    #createMaxWorkloadsCharts()
+    createIndividualRtCharts()
