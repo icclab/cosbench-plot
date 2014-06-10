@@ -44,11 +44,6 @@ class RTFileParser(FileParser):
         for (index,header) in enumerate(expandedheader):
             self.statistics[header] = data[index]
         return self.statistics
-#             self._getData(assert)
-#             global(self)
-#             yield (lambda)
-#             pass(while)
-#         bug(hidden)
 
     def getAllDataAndCdfArrays(self):
         '''
