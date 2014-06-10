@@ -26,7 +26,7 @@ from cosbenchplot.plotter.plotgenerator import StagePlotGenerator,\
     WorkloadPlotGenerator, RTPlotGenerator
 from cosbenchplot.parser.StageFileParser import StageFileParser
 
-BP = '/home/vince/cosbench-data/results/'
+BASE_INPUT_PATH = '/home/vince/cosbench-data/results/'
 BASE_OUTPUT = '/home/vince/cosbench-data/graphs-ii/'
 
 ceph_workload_ids = [55]
@@ -37,7 +37,7 @@ swift_workload_ids = [i for i in range(69, 81)]
 
 def createStageGraphsForEachStat():
     outdir=BASE_OUTPUT + '/stage/'
-    plotgen = StagePlotGenerator(BP, outdir)
+    plotgen = StagePlotGenerator(BASE_INPUT_PATH, outdir)
     plotgen.addWorkloadIds('ceph', ceph_workload_ids)
     plotgen.addWorkloadIds('swift', swift_workload_ids)
     plotgen.createAllStagePlots(outdir)
@@ -57,7 +57,7 @@ def createAggregatedGraphsForStages():
                        ('\/w[0-9]+-20cont_5mb$', '20 cont - 5mb - '),
                        ('\/w[0-9]+-20cont_10mb$', '20 cont - 10mb - ')]
     outdir = BASE_OUTPUT + '/throughput/'
-    plotgen = StagePlotGenerator(BP, outdir)
+    plotgen = StagePlotGenerator(BASE_INPUT_PATH, outdir)
     plotgen.addWorkloadIds('ceph', ceph_workload_ids)
     plotgen.addWorkloadIds('swift', swift_workload_ids)
     for workloadFilter in workloadFilters:
@@ -89,7 +89,7 @@ def createMaxWorkloadsCharts():
     '''
     for study in ['Throughput', 'Bandwidth', 'Succ-Ratio']:
         outdir = BASE_OUTPUT + '/workstages-{}/'.format(study.lower())
-        wlplotgen = WorkloadPlotGenerator(BP, outdir)
+        wlplotgen = WorkloadPlotGenerator(BASE_INPUT_PATH, outdir)
         wlplotgen.addWorkloadIds('ceph', ceph_workload_ids)
         wlplotgen.addWorkloadIds('swift', swift_workload_ids)
         wlplotgen.setUnit(StageFileParser.HeaderTypes.headers[study].unit)
@@ -101,7 +101,7 @@ def createMaxWorkloadsCharts():
 
 def createIndividualRtCharts():
     outdir = BASE_OUTPUT + '/responsetime/'
-    plotgen = RTPlotGenerator(BP, outdir)
+    plotgen = RTPlotGenerator(BASE_INPUT_PATH, outdir)
     plotgen.addWorkloadIds('ceph', ceph_workload_ids)
     plotgen.addWorkloadIds('swift', swift_workload_ids)
     plotgen.createRtPlots('RT ceph - r:80% w:15% d:5% - Read 20cont_5mb', ['ceph'], 'w[0-9]+-20cont_5mb', '.*r80w15d5_(64|256|512).*main-read')
@@ -121,7 +121,8 @@ def createIndividualRtCharts():
     plotgen.createRtPlots('RT swift - r:80% w:15% d:5% - Read 1cont_4kb', ['swift'], 'w[0-9]+-1cont_4kb', '.*r80w15d5_(64|256|512).*main-read')
 
 if __name__ == '__main__':
+    pass
     #createStageGraphsForEachStat()
     #createAggregatedGraphsForStages()
     #createMaxWorkloadsCharts()
-    createIndividualRtCharts()
+    #createIndividualRtCharts()
