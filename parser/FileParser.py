@@ -55,7 +55,7 @@ class FileParser(object):
             for _ in range(startAtLine):
                 f.next()
             columnsData = [[]]
-            prevline = ''
+            # prevline = ''
             for line in f:
                 line = line.strip()
                 if stopPredicate is not None and stopPredicate(line) is True:
