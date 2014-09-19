@@ -210,7 +210,7 @@ class StagePlotGenerator(PlotGenerator):
     workload directories).
     '''
 
-    def __init__(self, basepath, outdir, workstage_file_re_filter):
+    def __init__(self, basepath, outdir):
         super(StagePlotGenerator, self).__init__(basepath, outdir)
         self._workstage_file_re_filter = '^s[0-9]+-'
         self._onlyAVg = False
