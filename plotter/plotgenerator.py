@@ -156,7 +156,6 @@ class PlotGenerator(object):
             for directory in tpl:
                 files = self._filterFileNames(os.listdir(directory), directory, re_filter)
                 files = self._validateFileNamesList(files)
-                print files
                 if len(files) > 0:
                     ws_dir_files.append(files)
             # ws_dir_files is a list containing the list of files to be compared
@@ -213,7 +212,7 @@ class StagePlotGenerator(PlotGenerator):
 
     def __init__(self, basepath, outdir, workstage_file_re_filter):
         super(StagePlotGenerator, self).__init__(basepath, outdir)
-        self._workstage_file_re_filter = workstage_file_re_filter
+        self._workstage_file_re_filter = '^s[0-9]+-'
         self._onlyAVg = False
 
     def plotOnlyAverage(self):
@@ -268,8 +267,7 @@ class StagePlotGenerator(PlotGenerator):
         sfpl.plot(show = False, saveto = self._outdir + title + '.svg')
 
     def _extractStageTitleFromFileName(self, ws_filename):
-        match = re.search('(^s[0-9]+-)(.*)(\.csv)', ws_filename)
-        print ws_filename
+        match = re.search('(' + self._workstage_file_re_filter + ')(.*)(\.csv)', ws_filename)
         return match.group(2)
 
     def _findMatchingFile(self, filenames, title):
@@ -278,7 +276,7 @@ class StagePlotGenerator(PlotGenerator):
         matches with that title
         '''
         for filename in filenames:
-            if re.search('^s[0-9]+-' + re.escape(title) + '\.csv', os.path.split(filename)[1]):
+            if re.search(self._workstage_file_re_filter + re.escape(title) + '\.csv', os.path.split(filename)[1]):
                 return filename
         raise Exception('Cannot find file that matches with ' + title)
 
