@@ -22,9 +22,9 @@ Created on May 8, 2014
 
 @author: vince
 '''
-from cosbenchplot.plotter.plotgenerator import StagePlotGenerator,\
+from plotter.plotgenerator import StagePlotGenerator,\
     WorkloadPlotGenerator, RTPlotGenerator
-from cosbenchplot.parser.StageFileParser import StageFileParser
+from parser.StageFileParser import StageFileParser
 
 BASE_INPUT_PATH = '/home/vince/cosbench-data/results/'
 BASE_OUTPUT = '/home/vince/cosbench-data/graphs-ii/'

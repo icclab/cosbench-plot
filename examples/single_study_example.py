@@ -23,7 +23,7 @@ Created on Jun 5, 2014
 @author: vince
 '''
 
-from cosbenchplot.plotter.plotgenerator import StagePlotGenerator, RTPlotGenerator
+from plotter.plotgenerator import StagePlotGenerator, RTPlotGenerator
 
 BASE_INPUT_PATH = '/home/vince/cosbench-data/results/'
 BASE_OUTPUT = '/home/vince/cosbench-data/ceph-replication-analysis/'

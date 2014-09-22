@@ -22,7 +22,7 @@ Created on May 9, 2014
 
 @author: vince
 '''
-from cosbenchplot.parser.FileParser import FileParser
+from parser.FileParser import FileParser
 from collections import OrderedDict
 
 class RTFileParser(FileParser):

@@ -23,10 +23,10 @@ Created on May 9, 2014
 @author: vince
 '''
 import unittest
-from cosbenchplot.parser.FileParser import FileParser
-from cosbenchplot.parser.StageFileParser import StageFileParser
-from cosbenchplot.parser.RTFileParser import RTFileParser
-from cosbenchplot.parser.WorkLoadFileParser import WorkLoadFileParser
+from parser.FileParser import FileParser
+from parser.StageFileParser import StageFileParser
+from parser.RTFileParser import RTFileParser
+from parser.WorkLoadFileParser import WorkLoadFileParser
 
 class Test(unittest.TestCase):
 

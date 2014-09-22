@@ -25,7 +25,7 @@ Created on May 11, 2014
 
 import matplotlib.pyplot as plt
 from numpy import polyfit, poly1d 
-from cosbenchplot.plotter.FilePlotter import FilePlotter
+from plotter.FilePlotter import FilePlotter
 
 class StageFilePlotter(FilePlotter):
 

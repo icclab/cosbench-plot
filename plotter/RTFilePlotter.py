@@ -24,7 +24,7 @@ Created on May 11, 2014
 '''
 
 import matplotlib.pyplot as plt
-from cosbenchplot.plotter.FilePlotter import FilePlotter
+from plotter.FilePlotter import FilePlotter
 
 class RTFilePlotter(FilePlotter):
 

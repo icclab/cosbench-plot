@@ -26,7 +26,7 @@ Created on May 13, 2014
 
 import matplotlib.pyplot as plt
 import random
-from cosbenchplot.plotter.FilePlotter import FilePlotter
+from plotter.FilePlotter import FilePlotter
 
 class ScatterPlotter(FilePlotter):
 

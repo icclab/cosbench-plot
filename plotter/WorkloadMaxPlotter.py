@@ -23,7 +23,7 @@ Created on May 20, 2014
 @author: vince
 '''
 import matplotlib.pyplot as plt
-from cosbenchplot.plotter.FilePlotter import FilePlotter
+from plotter.FilePlotter import FilePlotter
 
 class WorkloadMaxPlotter(FilePlotter):
 

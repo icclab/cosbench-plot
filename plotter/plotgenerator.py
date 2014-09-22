@@ -24,13 +24,13 @@ Created on May 16, 2014
 '''
 import os
 import re
-from cosbenchplot.parser.StageFileParser import StageFileParser
-from cosbenchplot.plotter.StageFilePlotter import StageFilePlotter
-from cosbenchplot.parser.FileParser import FileParser
-from cosbenchplot.parser.WorkLoadFileParser import WorkLoadFileParser
-from cosbenchplot.plotter.WorkloadMaxPlotter import WorkloadMaxPlotter
-from cosbenchplot.plotter.RTFilePlotter import RTFilePlotter
-from cosbenchplot.parser.RTFileParser import RTFileParser
+from parser.StageFileParser import StageFileParser
+from plotter.StageFilePlotter import StageFilePlotter
+from parser.FileParser import FileParser
+from parser.WorkLoadFileParser import WorkLoadFileParser
+from plotter.WorkloadMaxPlotter import WorkloadMaxPlotter
+from plotter.RTFilePlotter import RTFilePlotter
+from parser.RTFileParser import RTFileParser
 
 class PlotGenerator(object):
     '''
